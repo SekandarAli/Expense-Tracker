@@ -13,11 +13,12 @@ import 'package:hive/hive.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../pdf/pdfPages/pdf_api.dart';
 import '../widgets/reusing_widgets.dart';
 import 'settings.dart';
 
 class HomePage extends StatefulWidget {
-   HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   // Invoice? task;
 
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   List<FlSpot> dataSet = [];
   DateTime today = DateTime.now();
   DateTime now = DateTime.now();
-  int index = 2;
+  int index = 3;
 
   List<String> months = [
     "Jan",
@@ -52,6 +53,9 @@ class _HomePageState extends State<HomePage> {
     "Nov",
     "Dec"
   ];
+
+  String? search;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -89,7 +93,8 @@ class _HomePageState extends State<HomePage> {
     List tempdataSet = [];
 
     for (TransactionModel item in entireData) {
-      if (item.date.month == today.month && item.type == "Expense") {
+      // if (item.date.month == today.month && item.type == "Expense") {
+      if (item.type == "Expense") {
         tempdataSet.add(item);
       }
     }
@@ -110,58 +115,82 @@ class _HomePageState extends State<HomePage> {
     totalIncome = 0;
     totalExpense = 0;
     for (TransactionModel data in entireData) {
-      if (data.date.month == today.month) {
-        if (data.type == "Income") {
-          totalBalance += data.amount;
-          totalIncome += data.amount;
-        } else {
-          totalBalance -= data.amount;
-          totalExpense += data.amount;
-        }
+      // if (data.date.month == today.month) {
+      if (data.type == "Income") {
+        totalBalance += data.amount;
+        totalIncome += data.amount;
+      } else {
+        totalBalance -= data.amount;
+        totalExpense += data.amount;
       }
+      // }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 0.0,
+        toolbarHeight: 1.0,
+        backgroundColor: COLORS().primaryColor,
       ),
       backgroundColor: COLORS().backgroundColor,
       //
+      bottomNavigationBar: Container(height: 25, color: COLORS().primaryColor),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Container(
-        // color: COLORS().PrimaryColor,
-        height: 90,
-        width: 90,
-        child: FittedBox(
-          child: FloatingActionButton(
+      // floatingActionButton: SizedBox(
+      //   height: 80,
+      //   width: 80,
+      //   child: FittedBox(
+      //     child: FloatingActionButton(
+      //       onPressed: () {
+      //         Navigator.of(context)
+      //             .push(
+      //           CupertinoPageRoute(
+      //             builder: (context) => AddTransaction(),
+      //           ),
+      //         )
+      //             .then((value) {
+      //           setState(() {});
+      //         });
+      //       },
+      //       shape: RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.circular(
+      //           100,
+      //         ),
+      //       ),
+      //       backgroundColor: COLORS().primaryColor,
+      //       child: Icon(
+      //         Icons.add,
+      //         size: 40,
+      //       ),
+      //     ),
+      //   ),
+      // ),
+      //
+
+      floatingActionButton: Theme(
+          data: Theme.of(context).copyWith(
+              floatingActionButtonTheme: FloatingActionButtonThemeData(
+                  extendedSizeConstraints:
+                      BoxConstraints.tightFor(height: size.height*0.08, width: size.width*0.4))),
+          child: FloatingActionButton.extended(
+            backgroundColor: COLORS().primaryColor,
             onPressed: () {
               Navigator.of(context)
-                  .push(
-                CupertinoPageRoute(
-                  builder: (context) => AddTransaction(),
-                ),
-              )
-                  .then((value) {
-                setState(() {});
-              });
+                          .push(
+                        CupertinoPageRoute(
+                          builder: (context) => AddTransaction(),
+                        ),
+                      )
+                          .then((value) {
+                        setState(() {});
+                      });
             },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                16.0,
-              ),
-            ),
-            backgroundColor: COLORS().primaryColor,
-            child: Icon(
-              Icons.add_outlined,
-              size: 40,
-            ),
-          ),
-        ),
-      ),
-      //
+            label: Text("Add Data".toUpperCase(),style: TextStyle(fontSize: 16,),),
+            icon: Icon(Icons.add_circle,size: 30,),
+          )),
       body: FutureBuilder<List<TransactionModel>>(
         future: fetch(),
         builder: (context, snapshot) {
@@ -184,7 +213,11 @@ class _HomePageState extends State<HomePage> {
                     CircleAvatar(
                       maxRadius: 100,
                       backgroundColor: Colors.transparent,
-                      child: LottieBuilder.asset("assets/lottie/person.json",width: 200,height: 200,),
+                      child: LottieBuilder.asset(
+                        "assets/lottie/person.json",
+                        width: 200,
+                        height: 200,
+                      ),
                     ),
                     Text(
                       "Press Button below to Start !",
@@ -253,9 +286,9 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
-                            12.0,
+                            100,
                           ),
-                          color: Colors.white70,
+                          color: COLORS().primaryColor,
                         ),
                         padding: EdgeInsets.all(
                           12.0,
@@ -264,7 +297,7 @@ class _HomePageState extends State<HomePage> {
                           onTap: () {
                             Navigator.of(context)
                                 .push(
-                              MaterialPageRoute(
+                              CupertinoPageRoute(
                                 builder: (context) => Settings(),
                               ),
                             )
@@ -274,8 +307,8 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: Icon(
                             Icons.settings,
-                            size: 32.0,
-                            color: Color(0xff34393e),
+                            size: 32,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -283,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 //
-                selectMonth(),
+                // selectMonth(),
                 //
                 Container(
                   width: MediaQuery.of(context).size.width * 0.9,
@@ -377,18 +410,17 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(
-                        "${months[today.month - 1]} ${today.year}",
-                        // "$months",
-                        style: TextStyle(
-                          fontSize: 32.0,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
+                      // Text(
+                      //   "${months[today.month - 1]} ${today.year}",
+                      //   style: TextStyle(
+                      //     fontSize: 32.0,
+                      //     color: Colors.black87,
+                      //     fontWeight: FontWeight.w900,
+                      //   ),
+                      // ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.35,
-                        height: 50,
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        height: MediaQuery.of(context).size.width * 0.15,
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             primary: COLORS().primaryColor,
@@ -420,13 +452,9 @@ class _HomePageState extends State<HomePage> {
                               }).toList(),
                             );
 
-                            // final pdfFile =
-                            //     await PdfListExpenseDetails.generate(
-                            //         dataAtIndex, "aaa");
-
                             final pdfFile =
                                 await PdfInvoiceApi.generate(invoice);
-                            // PdfApi.openFile(pdfFile);
+                            // final openFile =  await PdfApi.openFile(pdfFile);
 
                             Navigator.push(
                                 context,
@@ -434,17 +462,17 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) =>
                                         ScreenShowPdf(pdfFile: pdfFile)));
                           },
-                          icon: Icon(Icons.picture_as_pdf_outlined),
-                          label: Text("Show PDF"),
+                          icon: Icon(Icons.picture_as_pdf),
+                          label: Text(
+                            "Show PDF",
+                            style: TextStyle(fontSize: 15),
+                          ),
                         ),
                       ),
-
-//////////////////////////////////////////////////////////////////////////////////////
-//                        PdfPageScreen(),
-/////////////////////////////////////////////////////////////////////////////////////
                     ],
                   ),
                 ),
+
                 //
                 dataSet.isEmpty || dataSet.length < 2
                     ? Container(
@@ -536,85 +564,222 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                //
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: snapshot.data!.length + 1,
-                  itemBuilder: (context, index) {
-                    TransactionModel dataAtIndex;
-                    try {
-                      dataAtIndex = snapshot.data![index];
-                    } catch (e) {
-                      return Container();
-                    }
 
-                    if (dataAtIndex.date.month == today.month) {
-                      if (dataAtIndex.type == "Income") {
-                        return WidgetReusing().tileExpenseIncome(
-                            value: dataAtIndex.amount,
-                            note: dataAtIndex.note,
-                            date: dataAtIndex.date,
-                            index: index,
-                            context: context,
-                            onLongPress: () async {
-                              bool? answer =
-                                  await WidgetReusing().showConfirmDialog(
-                                context,
-                                "WARNING",
-                                "This will delete this record. This action is irreversible. Do you want to continue ?",
-                              );
+                ///  SELECT TABS
 
-                              if (answer != null && answer) {
-                                await dbHelper.deleteData(index);
-                                setState(() {});
+                selectTabs(),
+
+                ///
+                /// Expense index 1
+                /// Credit index 2
+                /// ALL index 3
+                ///
+
+                index == 1
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.length + 1,
+                        itemBuilder: (context, index) {
+                          TransactionModel dataAtIndex;
+                          try {
+                            dataAtIndex = snapshot.data![index];
+                          } catch (e) {
+                            return Container();
+                          }
+
+                          if (dataAtIndex.type == "Income") {
+                            return Container();
+                          } else {
+                            return WidgetReusing().tileExpenseIncome(
+                                value: dataAtIndex.amount,
+                                note: dataAtIndex.note,
+                                date: dataAtIndex.date,
+                                index: index,
+                                context: context,
+                                onLongPress: () async {
+                                  bool? answer =
+                                      await WidgetReusing().showConfirmDialog(
+                                    context,
+                                    "WARNING",
+                                    "This will delete this record. This action is irreversible. Do you want to continue ?",
+                                  );
+
+                                  if (answer != null && answer) {
+                                    await dbHelper.deleteData(index);
+                                    setState(() {});
+                                  }
+                                },
+                                color: COLORS().redShadeLight,
+                                icon: Icons.arrow_circle_up_outlined,
+                                iconDataColor: Colors.red,
+                                text: "Expense",
+                                monthText:
+                                    "${dataAtIndex.date.day} ${months[dataAtIndex.date.month - 1]} ",
+                                minusPlus: "-",
+                                textColor: Colors.red.shade700,
+                                onPress: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    WidgetReusing().deleteInfoSnackBar,
+                                  );
+                                  // Navigator.of(context).push(
+                                  //   CupertinoPageRoute(
+                                  //     builder: (context) =>
+                                  //         AddTransaction(price: dataAtIndex.amount),
+                                  //   ),
+                                  // );
+                                });
+                          }
+                        },
+                      )
+                    : index == 2
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data!.length + 1,
+                            itemBuilder: (context, index) {
+                              TransactionModel dataAtIndex;
+                              try {
+                                dataAtIndex = snapshot.data![index];
+                              } catch (e) {
+                                return Container();
+                              }
+
+                              if (dataAtIndex.type == "Income") {
+                                return WidgetReusing().tileExpenseIncome(
+                                    value: dataAtIndex.amount,
+                                    note: dataAtIndex.note,
+                                    date: dataAtIndex.date,
+                                    index: index,
+                                    context: context,
+                                    onLongPress: () async {
+                                      bool? answer = await WidgetReusing()
+                                          .showConfirmDialog(
+                                        context,
+                                        "WARNING",
+                                        "This will delete this record. This action is irreversible. Do you want to continue ?",
+                                      );
+
+                                      if (answer != null && answer) {
+                                        await dbHelper.deleteData(index);
+                                        setState(() {});
+                                      }
+                                    },
+                                    color: COLORS().greenShadeLight,
+                                    icon: Icons.arrow_circle_down_outlined,
+                                    iconDataColor: Colors.green,
+                                    text: "Credit",
+                                    monthText:
+                                        "${dataAtIndex.date.day} ${months[dataAtIndex.date.month - 1]} ",
+                                    minusPlus: "+",
+                                    textColor: Colors.green.shade700,
+                                    onPress: () {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        WidgetReusing().deleteInfoSnackBar,
+                                      );
+                                    });
+                              } else {
+                                return Container();
                               }
                             },
-                            color: COLORS().greenShadeLight,
-                            icon: Icons.arrow_circle_down_outlined,
-                            iconDataColor: Colors.green,
-                            text: "Credit",
-                            monthText:
-                                "${dataAtIndex.date.day} ${months[dataAtIndex.date.month - 1]} ",
-                            minusPlus: "+",
-                            textColor: Colors.green.shade700);
-                      } else {
-                        return WidgetReusing().tileExpenseIncome(
-                            value: dataAtIndex.amount,
-                            note: dataAtIndex.note,
-                            date: dataAtIndex.date,
-                            index: index,
-                            context: context,
-                            onLongPress: () async {
-                              bool? answer =
-                                  await WidgetReusing().showConfirmDialog(
-                                context,
-                                "WARNING",
-                                "This will delete this record. This action is irreversible. Do you want to continue ?",
-                              );
+                          )
+                        : index == 3
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: snapshot.data!.length + 1,
+                                itemBuilder: (context, index) {
+                                  TransactionModel dataAtIndex;
+                                  try {
+                                    dataAtIndex = snapshot.data![index];
+                                  } catch (e) {
+                                    return Container();
+                                  }
 
-                              if (answer != null && answer) {
-                                await dbHelper.deleteData(index);
-                                setState(() {});
-                              }
-                            },
-                            color: COLORS().redShadeLight,
-                            icon: Icons.arrow_circle_up_outlined,
-                            iconDataColor: Colors.red,
-                            text: "Expense",
-                            monthText:
-                                "${dataAtIndex.date.day} ${months[dataAtIndex.date.month - 1]} ",
-                            minusPlus: "-",
-                            textColor: Colors.red.shade700);
-                      }
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
+                                  // if (dataAtIndex.date.month == today.month) {
+                                  if (dataAtIndex.type == "Income") {
+                                    return WidgetReusing().tileExpenseIncome(
+                                        value: dataAtIndex.amount,
+                                        note: dataAtIndex.note,
+                                        date: dataAtIndex.date,
+                                        index: index,
+                                        context: context,
+                                        onLongPress: () async {
+                                          bool? answer = await WidgetReusing()
+                                              .showConfirmDialog(
+                                            context,
+                                            "WARNING",
+                                            "This will delete this record. This action is irreversible. Do you want to continue ?",
+                                          );
+
+                                          if (answer != null && answer) {
+                                            await dbHelper.deleteData(index);
+                                            setState(() {});
+                                          }
+                                        },
+                                        color: COLORS().greenShadeLight,
+                                        icon: Icons.arrow_circle_down_outlined,
+                                        iconDataColor: Colors.green,
+                                        text: "Credit",
+                                        monthText:
+                                            "${dataAtIndex.date.day} ${months[dataAtIndex.date.month - 1]} ",
+                                        minusPlus: "+",
+                                        textColor: Colors.green.shade700,
+                                        onPress: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            WidgetReusing().deleteInfoSnackBar,
+                                          );
+                                        });
+                                  } else {
+                                    return WidgetReusing().tileExpenseIncome(
+                                        value: dataAtIndex.amount,
+                                        note: dataAtIndex.note,
+                                        date: dataAtIndex.date,
+                                        index: index,
+                                        context: context,
+                                        onLongPress: () async {
+                                          bool? answer = await WidgetReusing()
+                                              .showConfirmDialog(
+                                            context,
+                                            "WARNING",
+                                            "This will delete this record. This action is irreversible. Do you want to continue ?",
+                                          );
+
+                                          if (answer != null && answer) {
+                                            await dbHelper.deleteData(index);
+                                            setState(() {});
+                                          }
+                                        },
+                                        color: COLORS().redShadeLight,
+                                        icon: Icons.arrow_circle_up_outlined,
+                                        iconDataColor: Colors.red,
+                                        text: "Expense",
+                                        monthText:
+                                            "${dataAtIndex.date.day} ${months[dataAtIndex.date.month - 1]} ",
+                                        minusPlus: "-",
+                                        textColor: Colors.red.shade700,
+                                        onPress: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            WidgetReusing().deleteInfoSnackBar,
+                                          );
+                                          // Navigator.of(context).push(
+                                          //   CupertinoPageRoute(
+                                          //     builder: (context) =>
+                                          //         AddTransaction(price: dataAtIndex.amount),
+                                          //   ),
+                                          // );
+                                        });
+                                  }
+                                },
+                              )
+                            : Container(),
+
                 //
                 SizedBox(
-                  height: 60.0,
+                  height: 30,
                 ),
               ],
             );
@@ -628,7 +793,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget selectMonth() {
+  Widget selectTabs() {
     return Padding(
       padding: EdgeInsets.all(
         8.0,
@@ -640,42 +805,87 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 setState(() {
                   index = 3;
-                  // today = DateTime(now.year, now.month - 2, today.day);
-                  today = DateTime(now.year, now.month - 1, today.day);
                 });
               },
               context: context,
-              containerColor:
-                  index == 3 ? COLORS().greenShadeDark : Colors.white,
-              text: months[now.month - 2],
+              containerColor: index == 3 ? COLORS().primaryColor : Colors.white,
+              text: "All",
               textColor: index == 3 ? Colors.white : COLORS().primaryColor),
           WidgetReusing().monthTabs(
               onTap: () {
                 setState(() {
                   index = 2;
-                  // today = DateTime(now.year, now.month - 1, today.day);
-                  today = now;
                 });
               },
               context: context,
-              containerColor: index == 2 ? COLORS().primaryColor : Colors.white,
-              text: months[now.month - 1],
+              containerColor:
+                  index == 2 ? COLORS().greenShadeDark : Colors.white,
+              text: "Credit",
               textColor: index == 2 ? Colors.white : COLORS().primaryColor),
           WidgetReusing().monthTabs(
               onTap: () {
                 setState(() {
                   index = 1;
-                  today = DateTime(now.year, now.month + 1, today.day);
-                  today = DateTime(now.year, now.month + 1, today.day);
-                  // today = DateTime.now();
                 });
               },
               context: context,
               containerColor: index == 1 ? COLORS().redShadeDark : Colors.white,
-              text: months[now.month],
+              text: "Expense",
               textColor: index == 1 ? Colors.white : COLORS().primaryColor),
         ],
       ),
     );
   }
+
+// Widget selectMonth() {
+//   return Padding(
+//     padding: EdgeInsets.all(
+//       8.0,
+//     ),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceAround,
+//       children: [
+//         WidgetReusing().monthTabs(
+//             onTap: () {
+//               setState(() {
+//                 index = 3;
+//                 // today = DateTime(now.year, now.month - 2, today.day);
+//                 today = DateTime(now.year, now.month - 1, today.day);
+//               });
+//             },
+//             context: context,
+//             containerColor:
+//                 index == 3 ? COLORS().greenShadeDark : Colors.white,
+//             text: months[now.month - 2],
+//             textColor: index == 3 ? Colors.white : COLORS().primaryColor),
+//         WidgetReusing().monthTabs(
+//             onTap: () {
+//               setState(() {
+//                 index = 2;
+//                 // today = DateTime(now.year, now.month - 1, today.day);
+//                 today = now;
+//               });
+//             },
+//             context: context,
+//             containerColor: index == 2 ? COLORS().primaryColor : Colors.white,
+//             text: months[now.month - 1],
+//             textColor: index == 2 ? Colors.white : COLORS().primaryColor),
+//         WidgetReusing().monthTabs(
+//             onTap: () {
+//               setState(() {
+//                 index = 1;
+//                 today = DateTime(now.year, now.month + 1, today.day);
+//                 today = DateTime(now.year, now.month + 1, today.day);
+//                 // today = DateTime.now();
+//               });
+//             },
+//             context: context,
+//             containerColor: index == 1 ? COLORS().redShadeDark : Colors.white,
+//             text: months[now.month],
+//             textColor: index == 1 ? Colors.white : COLORS().primaryColor),
+//       ],
+//     ),
+//   );
+// }
+
 }

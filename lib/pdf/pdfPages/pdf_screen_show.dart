@@ -32,7 +32,7 @@ class _ScreenShowPdfState extends State<ScreenShowPdf> {
             onTap: () {
               Navigator.pop(context, false);
             },
-            child: Icon(Icons.arrow_back, color: Colors.white),
+            child: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
           ),
           actions: [
             InkWell(
@@ -44,7 +44,17 @@ class _ScreenShowPdfState extends State<ScreenShowPdf> {
                 padding:  EdgeInsets.symmetric(horizontal: 20),
                 child: Icon(Icons.share, size: 25, color: Colors.white),
               ),
-            )
+            ),
+            // InkWell(
+            //   onTap: () {
+            //     Share.shareFiles([(widget.pdfFile.path)],
+            //         text: 'Invoice App');
+            //   },
+            //   child: Padding(
+            //     padding:  EdgeInsets.symmetric(horizontal: 20),
+            //     child: Icon(Icons.open_in_new_outlined, size: 25, color: Colors.white),
+            //   ),
+            // )
           ],
         ),
         body: PdfViewer.openFile(widget.pdfFile.path));

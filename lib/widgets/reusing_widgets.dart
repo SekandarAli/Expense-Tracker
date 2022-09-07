@@ -126,6 +126,7 @@ class WidgetReusing {
     required int index,
     required BuildContext context,
     required Function() onLongPress,
+    required Function() onPress,
     required Color color,
     required IconData icon,
     required Color iconDataColor,
@@ -137,9 +138,7 @@ class WidgetReusing {
     return InkWell(
       splashColor: COLORS().primaryColor,
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          WidgetReusing().deleteInfoSnackBar,
-        );
+        onPress();
       },
       onLongPress: () {
         onLongPress();
@@ -178,7 +177,7 @@ class WidgetReusing {
                                 text,
                                 style: TextStyle(
                                     fontSize: 20.0,
-                                    fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 width: 4.0,
@@ -186,7 +185,9 @@ class WidgetReusing {
                               Text(
                                 monthText,
                                 style: TextStyle(
-                                  color: Colors.grey[800],
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500
                                 ),
                               ),
                             ],

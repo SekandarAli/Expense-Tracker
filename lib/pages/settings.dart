@@ -23,227 +23,206 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      appBar: AppBar(
-        title: Text(
-          "Settings"
-        ),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(
-          12.0,
-        ),
-        children: [
-          //
-          ListTile(
-            onTap: () async {
-              String nameEditing = "";
-              String? name = await showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  backgroundColor: Colors.grey[300],
-                  title: Text(
-                    "Enter new name",
-                  ),
-                  content: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white70,
-                      borderRadius: BorderRadius.circular(
-                        12.0,
-                      ),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 16.0,
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: "Your Name",
-                        border: InputBorder.none,
-                      ),
-                      style: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                      // maxLength: 12,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(9),
-                      ],
-                      onChanged: (val) {
-                        nameEditing = val;
-                      },
-                    ),
-                  ),
-                  actions: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(nameEditing);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          primary: COLORS().primaryColor),
-                      child: Text(
-                        "OK",
-                      ),
-                    ),
-                  ],
+      body: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.all(
+            12.0,
+          ),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  color: Colors.black,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back_ios_new_sharp,size: 30,color: Colors.black),
                 ),
-              );
-              //
-              if (name != null && name.isNotEmpty) {
-                DbHelper dbHelper = DbHelper();
-                await dbHelper.addName(name);
-              }
-            },
-            tileColor: Colors.white,
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 12.0,
-              horizontal: 20.0,
+                Text(
+                  "Setting\t\t\t\t",
+                  style: TextStyle(
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(""),
+              ],
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                8.0,
-              ),
-            ),
-            title: Text(
-              "Change Name",
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            subtitle: Text(
-              "Welcome {your_new_name}",
-            ),
-            trailing: Icon(
-              Icons.change_circle,
-              size: 32.0,
-              color: Colors.black87,
-            ),
-          ),
 
-          SizedBox(
-            height: 20.0,
-          ),
-          //
-          ListTile(
-            onTap: () async {
-              bool answer = await WidgetReusing().showConfirmDialog(
-                  context,
-                  "Warning",
-                  "This is irreversible. Your entire data will be Lost");
-              if (answer) {
-                await dbHelper.cleanData();
-                Navigator.of(context).pop();
-              }
-            },
-            tileColor: Colors.white,
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 12.0,
-              horizontal: 20.0,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                8.0,
+            //
+            SizedBox(height: 20),
+            ListTile(
+              onTap: () async {
+                String nameEditing = "";
+                String? name = await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    backgroundColor: Colors.grey[300],
+                    title: Text(
+                      "Enter new name",
+                    ),
+                    content: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white70,
+                        borderRadius: BorderRadius.circular(
+                          12.0,
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 16.0,
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: "Your Name",
+                          border: InputBorder.none,
+                        ),
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                        // maxLength: 12,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(9),
+                        ],
+                        onChanged: (val) {
+                          nameEditing = val;
+                        },
+                      ),
+                    ),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(nameEditing);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            primary: COLORS().primaryColor),
+                        child: Text(
+                          "OK",
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                //
+                if (name != null && name.isNotEmpty) {
+                  DbHelper dbHelper = DbHelper();
+                  await dbHelper.addName(name);
+                }
+              },
+              tileColor: Colors.white,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 20.0,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  8.0,
+                ),
+              ),
+              title: Text(
+                "Change Name",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              subtitle: Text(
+                "Welcome {your_new_name}",
+              ),
+              trailing: Icon(
+                Icons.change_circle,
+                size: 32.0,
+                color: Colors.black87,
               ),
             ),
-            title: Text(
-              "Clean Data",
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            subtitle: Text(
-              "This is irreversible and your data will be remove",
-            ),
-            trailing: Icon(
-              Icons.delete_forever,
-              size: 32.0,
-              color: Colors.red.shade600,
-            ),
-          ),
 
-          //
-          SizedBox(
-            height: 20.0,
-          ),
-
-          ListTile(
-            onTap: () async {
-              bool answer = await WidgetReusing().showConfirmDialog(
-                  context,
-                  "Theme",
-                  "Change your Theme");
-              if (answer) {
-                Navigator.of(context).pop();
-              }
-            },
-            tileColor: Colors.white,
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 12.0,
-              horizontal: 20.0,
+            SizedBox(
+              height: 20.0,
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                8.0,
+            //
+            ListTile(
+              onTap: () async {
+                bool answer = await WidgetReusing().showConfirmDialog(
+                    context,
+                    "Warning",
+                    "This is irreversible. Your entire data will be Lost");
+                if (answer) {
+                  await dbHelper.cleanData();
+                  Navigator.of(context).pop();
+                }
+              },
+              tileColor: Colors.white,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 20.0,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  8.0,
+                ),
+              ),
+              title: Text(
+                "Clean Data",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              subtitle: Text(
+                "This is irreversible and your data will be remove",
+              ),
+              trailing: Icon(
+                Icons.delete_forever,
+                size: 32.0,
+                color: Colors.red.shade600,
               ),
             ),
-            title: Text(
-              "Theme",
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w800,
+
+            //
+            SizedBox(
+              height: 20.0,
+            ),
+
+            ListTile(
+              onTap: () async {
+                bool answer = await WidgetReusing().showConfirmDialog(
+                    context,
+                    "Theme",
+                    "Coming Soon...");
+                if (answer) {
+                  Navigator.of(context).pop();
+                }
+              },
+              tileColor: Colors.white,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 20.0,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  8.0,
+                ),
+              ),
+              title: Text(
+                "Theme",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              subtitle: Text(
+                "Change Your Theme to Dark or Light",
+              ),
+              trailing: Icon(
+                Icons.dark_mode,
+                size: 32.0,
+                color: Colors.black,
               ),
             ),
-            subtitle: Text(
-              "Change Your Theme to Dark or Light",
-            ),
-            trailing: Icon(
-              Icons.dark_mode,
-              size: 32.0,
-              color: Colors.black,
-            ),
-          ),
 
-          //
-          // FutureBuilder<bool>(
-          //   future: dbHelper.getLocalAuth(),
-          //   builder: (context, snapshot) {
-          //     // print(snapshot.data);
-          //     if (snapshot.hasData) {
-          //       return SwitchListTile(
-          //         onChanged: (val) {
-          //           DbHelper dbHelper = DbHelper();
-          //           dbHelper.setLocalAuth(val);
-          //           setState(() {});
-          //         },
-          //         value: snapshot.data == null ? false : snapshot.data!,
-          //         tileColor: Colors.white,
-          //         contentPadding: EdgeInsets.symmetric(
-          //           vertical: 12.0,
-          //           horizontal: 20.0,
-          //         ),
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(
-          //             8.0,
-          //           ),
-          //         ),
-          //         title: Text(
-          //           "Local Bio Auth",
-          //           style: TextStyle(
-          //             fontSize: 20.0,
-          //             fontWeight: FontWeight.w800,
-          //           ),
-          //         ),
-          //         subtitle: Text(
-          //           "Secure This app, Use Fingerprint to unlock the app.",
-          //         ),
-          //       );
-          //     } else {
-          //       return Container();
-          //     }
-          //   },
-          // ),
-        ],
+          ],
+        ),
       ),
     );
   }

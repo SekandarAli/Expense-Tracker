@@ -307,7 +307,7 @@ class PdfInvoiceApi {
         item.amount,
         item.type == "Income" ? item.type : item.type,
         item.note,
-        item.date,
+        ["D-M-Y",item.date.day,item.date.month,item.date.year],
       ];
     }).toList();
 
@@ -315,9 +315,7 @@ class PdfInvoiceApi {
       headers: header,
       data: data,
       rowDecoration: BoxDecoration(
-          // color: modelInvoice.items.map((e) =>
-          //     e.type == "rrr" ? PdfColors.deepPurple100 : PdfColors.yellow)),
-      color : PdfColors.purple100),
+      color : PdfColors.purple50),
       cellStyle: TextStyle(
           fontWeight: FontWeight.bold, fontSize: 13, color: PdfColors.black),
       border: TableBorder.all(

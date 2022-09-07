@@ -5,7 +5,6 @@
 import 'package:expense_tracker/color.dart';
 import 'package:expense_tracker/controllers/db_helper.dart';
 import 'package:expense_tracker/pages/add_name.dart';
-import 'package:expense_tracker/pages/auth.dart';
 import 'package:expense_tracker/pages/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -29,25 +28,14 @@ class _SplashState extends State<Splash> {
 
   Future getName() async {
     String? name = await dbHelper.getName();
-    name == null;
     if (name != null) {
-      bool? auth = await dbHelper.getLocalAuth();
-      if (auth) {
-        Navigator.of(context).pushReplacement(
+      Future.delayed(Duration(seconds: 3), () {
+        return Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => FingerPrintAuth(),
-            // builder: (context) => AddName(),
+            builder: (context) => HomePage(),
           ),
         );
-      } else {
-        Future.delayed(Duration(seconds: 3), () {
-          return Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomePage(),
-            ),
-          );
-        });
-      }
+      });
     } else {
       Future.delayed(Duration(seconds: 3), () {
         return Navigator.of(context).pushReplacement(
@@ -59,7 +47,6 @@ class _SplashState extends State<Splash> {
     }
   }
 
-  //
   @override
   Widget build(BuildContext context) {
     return Scaffold(

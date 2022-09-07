@@ -42,7 +42,7 @@ class _AddNameState extends State<AddName> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 100),
+              SizedBox(height: MediaQuery.of(context).size.height*0.2),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white70,

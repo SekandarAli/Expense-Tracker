@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Expenses Tracker',
-      darkTheme: ThemeData.dark(),
       theme: ThemeData(
         fontFamily: "customFont",
         primaryColor: COLORS().primaryColor,

@@ -26,7 +26,8 @@ class _ScreenShowPdfState extends State<ScreenShowPdf> {
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: Text("PDF"),
+          title: Text("P D F"),
+          centerTitle: true,
           leading: InkWell(
             onTap: () {
               Navigator.pop(context, false);

@@ -25,8 +25,9 @@ class _SettingsState extends State<Settings> {
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: Text(
-          "Settings",
+          "Settings"
         ),
+        centerTitle: true,
       ),
       body: ListView(
         padding: EdgeInsets.all(

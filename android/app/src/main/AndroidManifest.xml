@@ -3,7 +3,7 @@
    <application
         android:label="expense_tracker"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@android:drawable/ic_lock_idle_charging">
         <activity
             android:name=".MainActivity"
             android:exported="true"

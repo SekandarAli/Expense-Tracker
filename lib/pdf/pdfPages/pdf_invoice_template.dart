@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
+import 'package:expense_tracker/models/transaction_model.dart';
 import 'package:expense_tracker/pdf/model/model_pdf.dart';
 import 'package:flutter/cupertino.dart' as cd;
+import 'package:hive/hive.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
@@ -11,6 +13,8 @@ import 'pdf_api.dart';
 import 'package:intl/intl.dart';
 
 class PdfInvoiceApi {
+  static List<List> data = [];
+
   static Future<File> generate(Invoice invoice) async {
     final pdf = Document();
 
@@ -224,15 +228,14 @@ class PdfInvoiceApi {
           SizedBox(height: 2 * PdfPageFormat.mm),
           buildSimpleText(title: 'NAME', value: invoice.name),
           SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(title: 'MONTH', value: invoice.monthName),
-          SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(
-            title: 'DATE',
-            value: Utils.formatDate(invoice.date),
-          ),
-          SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(
-              title: 'This is official from Expense Tracker App', value: ""),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            buildSimpleText(title: 'MONTH', value: invoice.monthName),
+            buildSimpleText(
+                title: 'DATE', value: Utils.formatDate(invoice.date)),
+          ]),
+          // SizedBox(height: 1 * PdfPageFormat.mm),
+          // buildSimpleText(
+          //     title: 'This is official from Expense Tracker App', value: ""),
         ],
       );
 
@@ -299,10 +302,10 @@ class PdfInvoiceApi {
       'Date',
     ];
 
-    final data = modelInvoice.items!.map((item) {
+    data = modelInvoice.items!.map((item) {
       return [
         item.amount,
-        item.type,
+        item.type == "Income" ? item.type : item.type,
         item.note,
         item.date,
       ];
@@ -311,6 +314,12 @@ class PdfInvoiceApi {
     return Table.fromTextArray(
       headers: header,
       data: data,
+      rowDecoration: BoxDecoration(
+          // color: modelInvoice.items.map((e) =>
+          //     e.type == "rrr" ? PdfColors.deepPurple100 : PdfColors.yellow)),
+      color : PdfColors.purple100),
+      cellStyle: TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 13, color: PdfColors.black),
       border: TableBorder.all(
         width: 2,
         style: BorderStyle.solid,
@@ -330,8 +339,8 @@ class PdfInvoiceApi {
   }
 }
 
-
 class Utils {
   static formatPrice(double price) => '\$ ${price.toStringAsFixed(2)}';
+
   static formatDate(DateTime date) => DateFormat.yMd().format(date);
 }

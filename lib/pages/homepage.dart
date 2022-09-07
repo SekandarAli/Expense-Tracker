@@ -407,9 +407,9 @@ class _HomePageState extends State<HomePage> {
                                 name: "${preferences.getString('name')}",
                               ),
                               expenseData: ExpenseData(
+                                  totalBalance: "${totalBalance.toString()}/-",
                                   totalIncome: "${totalIncome.toString()}/-",
-                                  totalExpense: "${totalExpense.toString()}/-",
-                                  totalBalance: "${totalBalance.toString()}/-"),
+                                  totalExpense: "${totalExpense.toString()}/-"),
                               items: box.values.map((element) {
                                 return TransactionModel(
                                   amount: element['amount'],
